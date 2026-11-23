@@ -1,3 +1,4 @@
+
 name: Employee Management CI
 
 on:
@@ -10,6 +11,8 @@ on:
     branches:
       - main
       - develop
+
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -30,10 +33,19 @@ jobs:
           distribution: temurin
           java-version: '21'
           cache: maven
+          cache-dependency-path: backend/pom.xml
 
-      - name: Build and test Java application
+      - name: Build and test Spring Boot
         working-directory: backend
-        run: mvn -B clean verify
+        run: ./mvnw -B clean verify
+
+      - name: Upload Java JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: employee-backend-jar
+          path: backend/target/*.jar
+          if-no-files-found: error
+          retention-days: 7
 
   frontend-build:
     name: React Frontend Build
@@ -57,3 +69,11 @@ jobs:
       - name: Build React application
         working-directory: frontend
         run: npm run build
+
+      - name: Upload React build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: employee-frontend-dist
+          path: frontend/dist/
+          if-no-files-found: error
+          retention-days: 7
