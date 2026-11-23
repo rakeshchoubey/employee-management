@@ -11,7 +11,7 @@ async function handleResponse(response) {
       const error = await response.json();
       message = error.detail || error.message || message;
     } catch {
-      // Response did not contain JSON
+      // Response did not contain JSON so throwing exception
     }
 
     throw new Error(message);
