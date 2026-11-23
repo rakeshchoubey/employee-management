@@ -34,8 +34,13 @@ jobs:
           java-version: '21'
           cache: maven
           cache-dependency-path: backend/pom.xml
-
-      - name: Build and test Spring Boot
+        
+	  # Fix Maven Wrapper permissions
+      - name: Grant execute permission to Maven Wrapper
+        working-directory: backend
+        run: chmod +x mvnw
+      
+	  - name: Build and test Spring Boot
         working-directory: backend
         run: ./mvnw -B clean verify
 
